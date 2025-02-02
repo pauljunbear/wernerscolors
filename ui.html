@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Werner's Colors</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      height: 100vh;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .main-header {
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 300;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-bar {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .primary-button {
+      background: #000000;
+      color: white;
+    }
+
+    .primary-button:hover {
+      background: #333333;
+    }
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #666;
+      padding: 0;
+      margin-right: auto;
+    }
+
+    .back-button:hover {
+      color: #000;
+    }
+    
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .color-card {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .color-card:hover {
+      transform: translateY(-2px);
+    }
+    
+    .color-swatch {
+      width: 100%;
+      height: 100px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    
+    .color-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .color-group {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .detail-view {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      margin-top: 73px;
+    }
+
+    .detail-header {
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+    }
+
+    .detail-title {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .detail-content {
+      padding: 20px;
+      flex: 1;
+    }
+
+    .detail-swatch {
+      width: 100%;
+      height: 200px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .detail-section {
+      margin-bottom: 24px;
+    }
+
+    .detail-section h3 {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .detail-section p {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .example-item {
+      background: #f8f8f8;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .example-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .color-metadata {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metadata-item {
+      flex: 1;
+      background: #f8f8f8;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .metadata-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metadata-value {
+      font-size: 14px;
+      color: #000;
+    }
+
+    .color-relationships {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .relationship-card {
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .relationship-swatch {
+      width: 100%;
+      height: 60px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .historical-context {
+      background: #f8f8f8;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 24px;
+    }
+
+    .historical-context p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #666;
+      margin: 0;
+    }
+
+    .color-link {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dashed #666;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .color-link:hover {
+      opacity: 0.7;
+    }
+
+    .copy-hex {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .copy-hex:hover {
+      background: #f0f0f0;
+    }
+
+    .copy-hex:active {
+      background: #e8e8e8;
+    }
+
+    .copy-feedback {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .copy-feedback.show {
+      opacity: 1;
+    }
+
+    .relationships-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .relationship-card {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .relationship-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .relationship-type {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .relationship-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .relationship-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .metadata-tag {
+      background: #f0f0f0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main-header">
+      <input type="text" class="search-bar" id="searchInput" placeholder="Search colors by name, group, or description...">
+      <button class="button primary-button" id="generateButton">Generate Random Color</button>
+    </div>
+
+    <div id="mainView">
+      <div class="color-grid" id="colorGrid"></div>
+    </div>
+
+    <div id="detailView" class="detail-view">
+      <div class="detail-header">
+        <button class="back-button" id="backButton">
+          ← Back to colors
+        </button>
+        <h2 class="detail-title" id="detailName"></h2>
+        <div style="width: 80px"></div>
+      </div>
+      <div class="detail-content">
+        <div id="detailSwatch" class="detail-swatch"></div>
+        
+        <div class="color-metadata">
+          <div class="metadata-item">
+            <div class="metadata-label">Color Group</div>
+            <div class="metadata-value" id="detailGroup"></div>
+          </div>
+          <div class="metadata-item copy-hex" id="hexContainer">
+            <div class="metadata-label">Hex Code</div>
+            <div class="metadata-value" id="detailHex"></div>
+            <div class="copy-feedback">Copied!</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Description</h3>
+          <p id="detailDescription"></p>
+        </div>
+
+        <div class="detail-section">
+          <h3>Examples in Nature</h3>
+          <div class="examples-grid">
+            <div class="example-item">
+              <div class="example-label">Animal</div>
+              <p id="detailAnimal"></p>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Vegetable</div>
+              <p id="detailVegetable"></p>
+            </div>
+            <div class="example-item">
+              <div class="example-label">Mineral</div>
+              <p id="detailMineral"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Color Relationships</h3>
+          <div class="relationships-grid" id="colorRelationships">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Historical Context</h3>
+          <div class="historical-context">
+            <p>This color is part of Werner's Nomenclature of Colours, compiled by Patrick Syme in 1814. Werner's system was an early attempt to create a standardized color reference for use in the natural sciences, particularly mineralogy. The book became a crucial reference for scientists, including Charles Darwin on his voyage on the HMS Beagle.</p>
+            <p style="margin-top: 12px">Each color in the system is uniquely identified through examples found in the animal, vegetable, and mineral kingdoms, making it a remarkable bridge between art and natural science of the early 19th century.</p>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <button class="button primary-button" id="createStyle">Create Figma Color Style</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentColor = null;
+    const mainView = document.getElementById('mainView');
+    const detailView = document.getElementById('detailView');
+    const searchInput = document.getElementById('searchInput');
+    const generateButton = document.getElementById('generateButton');
+    const backButton = document.getElementById('backButton');
+    const createStyle = document.getElementById('createStyle');
+    let colors = [];
+    let usedRandomColors = new Set();
+
+    // Search functionality
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      filterColors(searchTerm);
+    });
+
+    function filterColors(searchTerm) {
+      const colorGrid = document.getElementById('colorGrid');
+      colorGrid.innerHTML = '';
+      
+      colors.filter(color => {
+        const searchString = `${color.name} ${color.group} ${color.description} ${color.animal} ${color.vegetable} ${color.mineral}`.toLowerCase();
+        return searchString.includes(searchTerm);
+      }).forEach(createColorCard);
+    }
+
+    // Generate random color
+    generateButton.addEventListener('click', () => {
+      let availableColors = colors.filter(color => !usedRandomColors.has(color.name));
+      
+      // If we've used all colors, reset the set
+      if (availableColors.length === 0) {
+        usedRandomColors.clear();
+        availableColors = colors;
+      }
+      
+      const randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+      usedRandomColors.add(randomColor.name);
+      showColorDetail(randomColor);
+    });
+
+    // Back to main view
+    backButton.addEventListener('click', () => {
+      detailView.style.display = 'none';
+      mainView.style.display = 'block';
+    });
+
+    // Create Figma style
+    createStyle.addEventListener('click', () => {
+      if (currentColor) {
+        parent.postMessage({ 
+          pluginMessage: { 
+            type: 'create-style', 
+            color: currentColor 
+          }
+        }, '*');
+      }
+    });
+
+    function findColorByName(name) {
+      return colors.find(c => c.name.toLowerCase() === name.toLowerCase());
+    }
+
+    function createColorLinks(description) {
+      // Get all color names from the original bracketed text
+      const colorMatches = description.match(/\[(.*?)\]/g) || [];
+      let linkedDescription = description;
+
+      // Replace each bracketed color name with a link
+      colorMatches.forEach(match => {
+        const colorName = match.slice(1, -1); // Remove brackets
+        const color = findColorByName(colorName);
+        if (color) {
+          linkedDescription = linkedDescription.replace(
+            match,
+            `<span class="color-link" data-color="${colorName}">${colorName}</span>`
+          );
+        } else {
+          linkedDescription = linkedDescription.replace(match, colorName);
+        }
+      });
+
+      return linkedDescription;
+    }
+
+    function createColorCard(color) {
+      const card = document.createElement('div');
+      card.className = 'color-card';
+      card.innerHTML = `
+        <div class="color-swatch" style="background-color: ${color.hex}"></div>
+        <div class="color-name">${color.name}</div>
+        <div class="color-group">${color.group}</div>
+      `;
+      
+      card.onclick = () => showColorDetail(color);
+      colorGrid.appendChild(card);
+    }
+
+    function showColorRelationships(color) {
+      const relationshipsContainer = document.getElementById('colorRelationships');
+      relationshipsContainer.innerHTML = '';
+      
+      const metadata = colorMetadata[color.name];
+      if (!metadata || !metadata.relationships) return;
+      
+      metadata.relationships.forEach(rel => {
+        const card = document.createElement('div');
+        card.className = 'relationship-card';
+        card.innerHTML = `
+          <div class="relationship-type">${rel.type}</div>
+          <div class="relationship-name">${rel.name}</div>
+          <div class="relationship-description">${rel.description}</div>
+        `;
+        
+        card.onclick = () => {
+          const relatedColor = findColorByName(rel.name);
+          if (relatedColor) {
+            showColorDetail(relatedColor);
+          }
+        };
+        
+        relationshipsContainer.appendChild(card);
+      });
+      
+      // Add additional metadata if available
+      if (metadata.commonUses) {
+        const usesSection = document.createElement('div');
+        usesSection.className = 'metadata-grid';
+        metadata.commonUses.forEach(use => {
+          const tag = document.createElement('div');
+          tag.className = 'metadata-tag';
+          tag.textContent = use;
+          usesSection.appendChild(tag);
+        });
+        relationshipsContainer.appendChild(usesSection);
+      }
+    }
+
+    function showColorDetail(color) {
+      currentColor = color;
+      detailView.style.display = 'flex';
+      mainView.style.display = 'none';
+
+      // Create linked description
+      const linkedDescription = createColorLinks(color.description);
+
+      document.getElementById('detailName').textContent = color.name;
+      document.getElementById('detailGroup').textContent = color.group;
+      document.getElementById('detailHex').textContent = color.hex;
+      document.getElementById('detailSwatch').style.backgroundColor = color.hex;
+      document.getElementById('detailDescription').innerHTML = linkedDescription;
+      document.getElementById('detailAnimal').textContent = color.animal || 'None specified';
+      document.getElementById('detailVegetable').textContent = color.vegetable || 'None specified';
+      document.getElementById('detailMineral').textContent = color.mineral || 'None specified';
+
+      // Add click handlers to color links
+      document.querySelectorAll('.color-link').forEach(link => {
+        link.onclick = (e) => {
+          e.preventDefault();
+          const linkedColorName = link.dataset.color;
+          const linkedColor = findColorByName(linkedColorName);
+          if (linkedColor) {
+            showColorDetail(linkedColor);
+          }
+        };
+      });
+
+      showColorRelationships(color);
+    }
+
+    // Receive color data from the plugin
+    onmessage = (event) => {
+      colors = event.data.pluginMessage;
+      filterColors('');
+    };
+
+    // Add copy to clipboard functionality
+    const hexContainer = document.getElementById('hexContainer');
+    
+    hexContainer.addEventListener('click', () => {
+      const hexValue = document.getElementById('detailHex').textContent;
+      
+      // Create a temporary textarea element
+      const textarea = document.createElement('textarea');
+      textarea.value = hexValue;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      
+      // Select the text and copy it
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        const feedback = hexContainer.querySelector('.copy-feedback');
+        feedback.classList.add('show');
+        setTimeout(() => {
+          feedback.classList.remove('show');
+        }, 1500);
+      } catch (err) {
+        console.error('Failed to copy hex code:', err);
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    });
+  </script>
+</body>
+</html> 

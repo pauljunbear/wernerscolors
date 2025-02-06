@@ -1,5 +1,6 @@
 # Werner's Nomenclature of Colors - Figma Plugin
-<img width="400" alt="Screenshot 2025-02-06 at 3 25 54 PM" src="https://github.com/user-attachments/assets/134707c2-219a-41bd-a426-ef3e17005323" />
+
+<img width="833" alt="Screenshot 2025-02-06 at 3 27 01 PM" src="https://github.com/user-attachments/assets/4ef904a1-682a-4cae-80f7-5acff1843eba" />
 
 A Figma plugin that brings Werner's historical color system to modern design workflows. This plugin provides access to Werner's complete color catalog, including detailed descriptions, examples from nature, and historical context for each color.
 
